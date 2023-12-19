@@ -1,0 +1,17 @@
+C:\Users\aneli\Desktop\Team Travellers\Project\YourPlace\YourPlace.Core\bin\Debug\net7.0\YourPlace.Core.deps.json
+C:\Users\aneli\Desktop\Team Travellers\Project\YourPlace\YourPlace.Core\bin\Debug\net7.0\YourPlace.Core.runtimeconfig.json
+C:\Users\aneli\Desktop\Team Travellers\Project\YourPlace\YourPlace.Core\bin\Debug\net7.0\YourPlace.Core.dll
+C:\Users\aneli\Desktop\Team Travellers\Project\YourPlace\YourPlace.Core\bin\Debug\net7.0\YourPlace.Core.pdb
+C:\Users\aneli\Desktop\Team Travellers\Project\YourPlace\YourPlace.Core\bin\Debug\net7.0\YourPlace.Infrastructure.dll
+C:\Users\aneli\Desktop\Team Travellers\Project\YourPlace\YourPlace.Core\bin\Debug\net7.0\YourPlace.Infrastructure.pdb
+C:\Users\aneli\Desktop\Team Travellers\Project\YourPlace\YourPlace.Core\obj\Debug\net7.0\YourPlace.Core.csproj.AssemblyReference.cache
+C:\Users\aneli\Desktop\Team Travellers\Project\YourPlace\YourPlace.Core\obj\Debug\net7.0\YourPlace.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\aneli\Desktop\Team Travellers\Project\YourPlace\YourPlace.Core\obj\Debug\net7.0\YourPlace.Core.AssemblyInfoInputs.cache
+C:\Users\aneli\Desktop\Team Travellers\Project\YourPlace\YourPlace.Core\obj\Debug\net7.0\YourPlace.Core.AssemblyInfo.cs
+C:\Users\aneli\Desktop\Team Travellers\Project\YourPlace\YourPlace.Core\obj\Debug\net7.0\YourPlace.Core.csproj.CoreCompileInputs.cache
+C:\Users\aneli\Desktop\Team Travellers\Project\YourPlace\YourPlace.Core\obj\Debug\net7.0\YourPlace.Core.csproj.CopyComplete
+C:\Users\aneli\Desktop\Team Travellers\Project\YourPlace\YourPlace.Core\obj\Debug\net7.0\YourPlace.Core.dll
+C:\Users\aneli\Desktop\Team Travellers\Project\YourPlace\YourPlace.Core\obj\Debug\net7.0\refint\YourPlace.Core.dll
+C:\Users\aneli\Desktop\Team Travellers\Project\YourPlace\YourPlace.Core\obj\Debug\net7.0\YourPlace.Core.pdb
+C:\Users\aneli\Desktop\Team Travellers\Project\YourPlace\YourPlace.Core\obj\Debug\net7.0\YourPlace.Core.genruntimeconfig.cache
+C:\Users\aneli\Desktop\Team Travellers\Project\YourPlace\YourPlace.Core\obj\Debug\net7.0\ref\YourPlace.Core.dll
