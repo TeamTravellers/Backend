@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using YourPlace.Infrastructure.Data.Entities;
+using Microsoft.SqlServer;
 
 
 namespace YourPlace.Infrastructure.Data
@@ -17,5 +18,7 @@ namespace YourPlace.Infrastructure.Data
         public DbSet<Hotel> Hotels { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
+
+        public DbSet<Suggestion> Suggestions { get; set; }
     }
 }
