@@ -20,5 +20,9 @@ namespace YourPlace.Infrastructure.Data
         public DbSet<Reservation> Reservations { get; set; }
 
         public DbSet<Suggestion> Suggestions { get; set; }
+
+        public DbSet<Image> Images { get; set; }
+
+        public DbSet<Categories> Categories { get; set; }
     }
 }
