@@ -44,6 +44,11 @@ namespace YourPlace.Core.Services
             Hotel hotel = _dbContext.Hotels.Find(hotelID);
             return hotel;
         }
+        public List<Image> ShowHotelImages(int hotelID)
+        {
+            var hotelImages = _dbContext.Images.Where(x => x.HotelID ==  hotelID).ToList();
+            return hotelImages;
+        }
 
         //FILTERS
         public async Task<List<Hotel>> FilterByCountry(string country)
