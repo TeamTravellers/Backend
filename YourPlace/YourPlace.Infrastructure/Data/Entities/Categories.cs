@@ -26,7 +26,7 @@ namespace YourPlace.Infrastructure.Data.Entities
         public string Company { get; set; }
 
         [Required]
-        public string Pricing { get; set; }
+        public decimal Pricing { get; set; }
 
         [ForeignKey("Hotel")]
         public int HotelID { get; set; }

@@ -12,6 +12,9 @@ namespace YourPlace.Infrastructure.Data.Entities
         [Key]
         public int HotelID { get; set; }
 
+        [Required]
+        public string MainImageURL { get; set; }
+
         [Required] 
         public string HotelName { get; set; }
 
