@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using YourPlace.Infrastructure.Data;
 using YourPlace.Infrastructure.Data.Entities;
+using YourPlace.Core.Contracts;
 
 namespace YourPlace.Core.Services
 {
-    public class UserServices 
+    public class UserServices : IUsers
     {
         private readonly YourPlaceDbContext _dbContext;
         public UserServices(YourPlaceDbContext dbContext)
@@ -50,10 +51,7 @@ namespace YourPlace.Core.Services
         //Account Features
         public async Task DeleteAccount(User user)
         {
-            if(_dbContext.Users.Contains(user))
-            {
-                _dbContext.Users.Remove(user);
-            }
+            _dbContext.Users.Remove(user);
             _dbContext.SaveChangesAsync();
         }
 
