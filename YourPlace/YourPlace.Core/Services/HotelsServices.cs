@@ -37,7 +37,7 @@ namespace YourPlace.Core.Services
             {
                 filteredHotels = await _dbContext.Hotels.Where(x => x.HotelID == filter.HotelID).ToListAsync();
             }
-            return filteredHotels.ToList(); 
+            return filteredHotels.ToList(); //TO BE CHANGED
         }
         public Hotel ShowHotelInfo(int hotelID)
         {
