@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using YourPlace.Infrastructure.Data;
 using YourPlace.Infrastructure.Data.Entities;
 using YourPlace.Core.Contracts;
+using System.ComponentModel;
+using YourPlace.Core.Enums;
+using System.Data.Entity;
 
 namespace YourPlace.Core.Services
 {
@@ -16,8 +19,8 @@ namespace YourPlace.Core.Services
         {
             _dbContext = dbContext;
         }
-
-        public async Task MakeReservation(Reservation reservation)
+        
+        public async Task CreateReservation(Reservation reservation, int roomID)
         {
             var newReservation = new Reservation
             {
@@ -27,7 +30,7 @@ namespace YourPlace.Core.Services
                 LeavingDate = reservation.LeavingDate,
                 PeopleCount = reservation.PeopleCount,
                 Price = reservation.Price,
-                RoomID = reservation.RoomID,  
+                RoomID = roomID,  
             };
             await _dbContext.Reservations.AddAsync(newReservation);
             await _dbContext.SaveChangesAsync();
@@ -46,6 +49,81 @@ namespace YourPlace.Core.Services
             reservationToBeEdited.LeavingDate = editedReservation.LeavingDate;
             reservationToBeEdited.PeopleCount = editedReservation.PeopleCount;
             reservationToBeEdited.Price = editedReservation.Price;
+        }
+
+        public List<Room> FreeRoomCheck(Reservation reservation)
+        {
+            //bool response;
+            IQueryable<Room> rooms = _dbContext.Rooms;
+            IQueryable<Reservation> reservations = _dbContext.Reservations;
+            //IQueryable<Room> reservedRooms;
+            List<Room> freeRooms = new List<Room>();
+            foreach (var eachReservation in reservations)
+            {
+                if (reservation.ArrivalDate > eachReservation.LeavingDate || reservation.LeavingDate < eachReservation.ArrivalDate)
+                {
+                    //response = true;
+                    Console.WriteLine("The room is free.");
+                    freeRooms.AddRange(rooms.Where(x => x.RoomID == eachReservation.RoomID));
+                    //CreateReservation(reservation);
+                }
+                else
+                {
+                    //response = false;
+                    Console.WriteLine("The room is not free.");
+                    //reservedRooms = rooms.Where(x => x.RoomID == eachReservation.RoomID);
+                }
+            }
+            return freeRooms;
+        }
+        public List<Room> FreeRoomsAccordingToPeopleCount(Reservation reservation)
+        {
+            RoomTypes roomType = RoomTypesHelper.GetRoomTypeForPeopleCount(reservation.PeopleCount);
+            List<Room> freeRooms = FreeRoomCheck(reservation).ToList();
+            List<Room> appropriateFreeRooms = new List<Room>();  
+            foreach (var room in freeRooms)
+            {
+                if(room.Type.ToLower() == roomType.ToString().ToLower())
+                {
+                    appropriateFreeRooms.Add(room);
+                }
+            }
+            return appropriateFreeRooms;
+        }
+        public List<RoomTypes> GetRoomTypesForBiggerPeopleCount(Reservation reservation)
+        {
+            if (reservation.PeopleCount > 0 && reservation.PeopleCount <= 6)
+            {
+                RoomTypesHelper.GetRoomTypeForPeopleCount(reservation.PeopleCount);
+            }
+            else
+            {
+                List<Room> freeRooms = FreeRoomsAccordingToPeopleCount(reservation);
+                //TO BE CONTINUED...
+                List<RoomTypes> roomTypes = new List<RoomTypes>();
+                
+            }
+            return null;
+        }
+        public async Task<bool> CompleteReservation(Reservation reservation)
+        {
+            bool success;
+            try
+            {
+                List<Room> appropriateFreeRooms = FreeRoomsAccordingToPeopleCount(reservation).ToList();
+                List<int> roomsIDs = appropriateFreeRooms.Select(x => x.RoomID).ToList();
+                Random random = new Random();
+                int randomIndex = random.Next(roomsIDs.Count);
+                int roomID = roomsIDs[randomIndex];
+                reservation.RoomID = roomID;
+                await CreateReservation(reservation, roomID);
+                success = true;
+            }
+            catch
+            {
+                success = false;
+            }
+            return success;
         }
     }
 }
