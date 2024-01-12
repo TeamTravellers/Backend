@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace YourPlace.Core.Enums
 {
-    public enum RoomTypes
+    public enum RoomTypes : byte
     {
         none,
-        studio, //= 1
-        doubleRoom, //= 2
-        tripleRoom, //= 3
-        deluxeRoom, //= 4
+        studio = 1,
+        doubleRoom = 2,
+        tripleRoom = 3,
+        deluxeRoom = 4,
         maisonette, //= 5
     }
     public static class RoomTypesHelper
