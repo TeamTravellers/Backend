@@ -32,13 +32,13 @@ namespace YourPlace.Core.Services
                 Price = reservation.Price,
                 RoomID = roomID,  
             };
-            await _dbContext.Reservations.AddAsync(newReservation);
+            _dbContext.Reservations.Add(newReservation);
             await _dbContext.SaveChangesAsync();
         }
         public async Task DeleteReservation(Reservation reservation)
         {
             _dbContext.Reservations.Remove(reservation);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
         public async Task UpdateReservation(Reservation editedReservation)
         {
