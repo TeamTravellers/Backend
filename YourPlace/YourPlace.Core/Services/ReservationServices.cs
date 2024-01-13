@@ -7,8 +7,8 @@ using YourPlace.Infrastructure.Data;
 using YourPlace.Infrastructure.Data.Entities;
 using YourPlace.Core.Contracts;
 using System.ComponentModel;
-using YourPlace.Core.Enums;
 using System.Data.Entity;
+using YourPlace.Infrastructure.Data.Enums;
 
 namespace YourPlace.Core.Services
 {
@@ -88,7 +88,7 @@ namespace YourPlace.Core.Services
             List<Room> appropriateFreeRooms = new List<Room>();  
             foreach (var room in freeRooms)
             {
-                if(room.Type.ToLower() == roomType.ToString().ToLower())
+                if(room.Type.ToString().ToLower() == roomType.ToString().ToLower())
                 {
                     appropriateFreeRooms.Add(room);
                 }
@@ -108,11 +108,11 @@ namespace YourPlace.Core.Services
                 int peopleCount = reservation.PeopleCount;
                 List<Room> freeRoomsInHotel = FreeRoomCheck(reservation, hotel).ToList();
                 List<Room> suggestedRooms = new List<Room>();
-                Dictionary<int, RoomTypes> availableRooms = new Dictionary<int, RoomTypes>();
+                Dictionary<int, string> availableRooms = new Dictionary<int, string>();
                 var roomID = reservation.RoomID;
                 Room room = _dbContext.Rooms.Find(roomID);
                 var sameTypeRoomsAvailability = freeRoomsInHotel.Select(x => x.Type == room.Type).Count();
-                availableRooms.Add(sameTypeRoomsAvailability, (RoomTypes)Enum.Parse(typeof(RoomTypes), room.Type));
+                availableRooms.Add(sameTypeRoomsAvailability, room.Type.ToString());
 
                 foreach(var availability in availableRooms.Keys)
                 {

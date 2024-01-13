@@ -57,7 +57,7 @@ namespace YourPlace.Core.Services
 
         public async Task UpdateAccount(User editedUser)
         {
-            var userToBeEdited = await _dbContext.Users.FindAsync(editedUser.UserID);
+            var userToBeEdited = await _dbContext.Users.FindAsync(editedUser.Id);
             userToBeEdited.FirstName = editedUser.FirstName;
             userToBeEdited.Surname = editedUser.Surname;
             userToBeEdited.Email = editedUser.Email;

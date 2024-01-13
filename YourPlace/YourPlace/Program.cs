@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using YourPlace.Infrastructure.Data;
+//using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using YourPlace.Infrastructure.Data.Entities;
 
 public class Program
 {
@@ -13,7 +16,11 @@ public class Program
 
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
         builder.Services.AddDbContext<YourPlaceDbContext>(options => options.UseSqlServer(connectionString));
-        
+
+        builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<YourPlaceDbContext>()
+    .AddDefaultTokenProviders();
+
 
 
         var app = builder.Build();

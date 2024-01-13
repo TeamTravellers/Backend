@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YourPlace.Infrastructure.Data.Enums;
 
 namespace YourPlace.Infrastructure.Data.Entities
 {
@@ -14,7 +15,7 @@ namespace YourPlace.Infrastructure.Data.Entities
         public int RoomID { get; set; }
 
         [Required]
-        public string Type { get; set; } //студио, апартамент...
+        public RoomTypes Type { get; set; } //студио, апартамент...
 
         [Required]
         public decimal Price { get; set; }
