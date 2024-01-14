@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
+using YourPlace.Infrastructure.Data.Enums;
 
 namespace YourPlace.Infrastructure.Data.Entities
 {
@@ -23,11 +24,20 @@ namespace YourPlace.Infrastructure.Data.Entities
         public string Password { get; set; }
 
         
-        public string Role { get; set; }
+        public Roles Role { get; set; }
 
         public User() : base()
         {
 
+        }
+        public User(string firstName, string surname, string email)
+        {
+            FirstName = firstName;
+            Surname = surname;
+            Email = email;
+            NormalizedEmail = email.ToUpper();
+            //Password = password;
+            //Role = role;
         }
     }
 }

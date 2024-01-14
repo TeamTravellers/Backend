@@ -5,34 +5,52 @@ using System.Text;
 using System.Threading.Tasks;
 using YourPlace.Infrastructure.Data;
 using YourPlace.Infrastructure.Data.Entities;
+using YourPlace.Infrastructure.Data.Enums;
 using YourPlace.Core.Contracts;
+using Microsoft.AspNetCore.Identity;
+using YourPlace.Infrastructure.Data.Enums;
 
 namespace YourPlace.Core.Services
 {
-    public class UserServices : IUsers
+    public class UserServices 
     {
+        private readonly UserManager<User> userManager;
         private readonly YourPlaceDbContext _dbContext;
-        public UserServices(YourPlaceDbContext dbContext)
+        public UserServices(YourPlaceDbContext dbContext, UserManager<User> userManager)
         {
             _dbContext = dbContext;
+            this.userManager = userManager;
         }
 
-        //SIGN UP
-        public async Task CreateAccount(User user) 
+        #region SIGN UP
+        public async Task CreateAccountAsync(string firstName, string surname, string email, string password, Roles role)
         {
-            var newUser = new User
+            try
             {
-                FirstName = user.FirstName,
-                Surname = user.Surname,
-                Email = user.Email,
-                Password = user.Password,
-                Role = user.Role
-            };
-            await _dbContext.Users.AddAsync(newUser);
-            await _dbContext.SaveChangesAsync();
+                User user = new User(firstName, surname, email);
+                IdentityResult result = await userManager.CreateAsync(user);
+                if (!result.Succeeded)
+                {
+                    throw new ArgumentException(result.Errors.First().Description);
+                }
+                if (role == Roles.HotelManager)
+                {
+                    await userManager.AddToRoleAsync(user, Roles.HotelManager.ToString());
+                }
+                else
+                {
+                    await userManager.AddToRoleAsync(user, Roles.Traveller.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
         }
+        #endregion
 
-        //LOG IN
+        #region LOG IN
         public async Task LogIn(User user) //Checks if the account already exists in the database
         {
             bool result;
@@ -43,12 +61,13 @@ namespace YourPlace.Core.Services
             else
             {
                 result = false;
-                CreateAccount(user);    
+                CreateAccountAsync(user.FirstName, user.Surname, user.Email, user.Password, user.Role);    
             }
             Console.WriteLine(result);
         }
+        #endregion
 
-        //Account Features
+        #region Account Features
         public async Task DeleteAccount(User user)
         {
             _dbContext.Users.Remove(user);
@@ -71,5 +90,6 @@ namespace YourPlace.Core.Services
             user.Password = newPassword; 
             await _dbContext.SaveChangesAsync();
         }
+        #endregion
     }
 }
