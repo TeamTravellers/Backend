@@ -9,6 +9,7 @@ using YourPlace.Infrastructure.Data.Enums;
 using YourPlace.Core.Contracts;
 using Microsoft.AspNetCore.Identity;
 using YourPlace.Infrastructure.Data.Enums;
+using System.Data.Entity;
 
 namespace YourPlace.Core.Services
 {
@@ -51,45 +52,124 @@ namespace YourPlace.Core.Services
         #endregion
 
         #region LOG IN
-        public async Task LogIn(User user) //Checks if the account already exists in the database
+        public async Task<User> LogInUserAsync(string username, string password)
         {
-            bool result;
-            if (_dbContext.Users.Contains(user))
+            try
             {
-                result = true;
+                User user = await userManager.FindByNameAsync(username);
+
+                if (user == null)
+                {
+                    // create IdentityError => "Username not found!"
+                    CreateAccountAsync(user.FirstName, user.Surname, user.Email, user.Password, user.Role);
+                }
+
+                IdentityResult result = await userManager.PasswordValidators[0].ValidateAsync(userManager, user, password);
+
+                if (result.Succeeded)
+                {
+                    return user;
+                    //return await context.Users.FindAsync(user.Id);
+                }
+                else
+                {
+                    // create IdentityError => "Password is not correct!"
+                    return null;
+                }
             }
-            else
+            catch (Exception)
             {
-                result = false;
-                CreateAccountAsync(user.FirstName, user.Surname, user.Email, user.Password, user.Role);    
+                throw;
             }
-            Console.WriteLine(result);
         }
         #endregion
+        public async Task<User> ReadUserAsync(string key)
+        {
+            try
+            {
+                return await userManager.FindByIdAsync(key);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
+        public async Task<IEnumerable<User>> ReadAllUsersAsync()
+        {
+            try
+            {
+                return await _dbContext.Users.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         #region Account Features
-        public async Task DeleteAccount(User user)
+        public async Task UpdateAccountAsync(string firstName, string surname, string email)
         {
-            _dbContext.Users.Remove(user);
-            _dbContext.SaveChangesAsync();
+            try
+            {
+                if (!string.IsNullOrEmpty(email))
+                {
+                    User userToBeEdited = await userManager.FindByEmailAsync(email);
+                    userToBeEdited.FirstName = firstName;
+                    userToBeEdited.Surname = surname;
+                    userToBeEdited.Email = email;
+                    await userManager.UpdateAsync(userToBeEdited);
+                }
+                
+            }
+            catch(Exception)
+            {
+                throw;
+            }
+            
+            //userToBeEdited.Password = editedUser.Password;
+            //userToBeEdited.Role = editedUser.Role;
+            
+        }
+        public async Task ResetPasswordAsync(string id, string newPassword)
+        {
+            User user = await userManager.FindByIdAsync(id);
+            user.Password = newPassword;
+            await userManager.UpdateAsync(user);
+        }
+        public async Task DeleteAccountAsync(string id)
+        {
+            try
+            {
+                User user = await userManager.FindByIdAsync(id);
+                if (user != null)
+                {
+                    throw new InvalidOperationException("User not found for deletion");
+                }
+                await userManager.DeleteAsync(user);
+            }
+            catch(Exception)
+            {
+                throw;
+            }
         }
 
-        public async Task UpdateAccount(User editedUser)
-        {
-            var userToBeEdited = await _dbContext.Users.FindAsync(editedUser.Id);
-            userToBeEdited.FirstName = editedUser.FirstName;
-            userToBeEdited.Surname = editedUser.Surname;
-            userToBeEdited.Email = editedUser.Email;
-            userToBeEdited.Password = editedUser.Password;
-            userToBeEdited.Role = editedUser.Role;
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task ResetPassword(User user, string newPassword)
-        {
-            user.Password = newPassword; 
-            await _dbContext.SaveChangesAsync();
-        }
         #endregion
+        #region CRUD for Roles
+
+        public async Task CreateRoleAsync(IdentityRole role)
+        {
+            try
+            {
+                _dbContext.Roles.Add(role);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException("The role already exists");
+            }
+        }
+
+        #endregion
+
     }
 }
