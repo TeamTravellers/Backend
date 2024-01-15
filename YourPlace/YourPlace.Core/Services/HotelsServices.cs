@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 using YourPlace.Infrastructure.Data;
 using YourPlace.Infrastructure.Data.Entities;
 using YourPlace.Core.Contracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace YourPlace.Core.Services
 {
-    public class HotelsServices :IHotel
+    public class HotelsServices :IHotel, IDbCRUD<Hotel, List<object>>
     {
         private readonly YourPlaceDbContext _dbContext;
 
@@ -97,7 +98,48 @@ namespace YourPlace.Core.Services
             return filteredHotels;
         }
 
+        public async Task CreateAsync(Hotel hotel)
+        {
+            try
+            {
+                _dbContext.Hotels.Add(hotel);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch(Exception)
+            {
+                throw;
+            }
+        }
 
+        public Task<Hotel> ReadAsync(int key, bool useNavigationalProperties = false, bool isReadOnly = true)
+        {
+            try
+            {
+                IQueryable<Hotel> hotels = _dbContext.Hotels;
+                if (isReadOnly)
+                {
+                    hotels.AsNoTrackingWithIdentityResolution();
+                }
+            }
+            catch
+            {
 
+            }
+        }
+
+        public Task<Hotel> ReadAllAsync(Hotel item, bool useNavigationalProperties = false, bool isReadOnly = true)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateAsync(Hotel item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAsync(Hotel item)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

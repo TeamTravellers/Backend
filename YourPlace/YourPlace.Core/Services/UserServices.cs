@@ -47,7 +47,6 @@ namespace YourPlace.Core.Services
             {
                 throw new Exception(ex.Message);
             }
-            
         }
         #endregion
 
@@ -168,7 +167,6 @@ namespace YourPlace.Core.Services
                 throw new ArgumentException("The role already exists");
             }
         }
-
         #endregion
 
     }
