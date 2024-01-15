@@ -9,9 +9,9 @@ namespace YourPlace.Core.Contracts
     public interface IDbCRUD<T,K> where T : class
     {
         Task CreateAsync(T item);
-        Task<T> ReadAsync(T item, bool useNavigationalProperties = false, bool isReadOnly = true);
-        Task<T> ReadAllAsync(T item, bool useNavigationalProperties = false, bool isReadOnly = true);
+        Task<T> ReadAsync(K key, bool useNavigationalProperties = false, bool isReadOnly = true);
+        Task<IEnumerable<T>> ReadAllAsync(bool useNavigationalProperties = false, bool isReadOnly = true);
         Task UpdateAsync(T item);
-        Task DeleteAsync(T item);
+        Task DeleteAsync(K key);
     }
 }

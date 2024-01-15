@@ -9,9 +9,9 @@ namespace YourPlace.Core.Contracts
 {
     public interface IReservation
     {
-        public Task CreateReservation(Reservation reservation, int roomID);
-        public Task DeleteReservation(Reservation reservation);
+        // Task CreateReservation(Reservation reservation, int roomID);
+        //public Task DeleteReservation(Reservation reservation);
 
-        public Task UpdateReservation(Reservation editedReservation);
+        //public Task UpdateReservation(Reservation editedReservation);
     }
 }

@@ -8,10 +8,11 @@ using YourPlace.Infrastructure.Data;
 using YourPlace.Infrastructure.Data.Entities;
 using YourPlace.Core.Contracts;
 using Microsoft.EntityFrameworkCore;
+using System.Collections;
 
 namespace YourPlace.Core.Services
 {
-    public class HotelsServices :IHotel, IDbCRUD<Hotel, List<object>>
+    public class HotelsServices :IHotel, IDbCRUD<Hotel, int>
     {
         private readonly YourPlaceDbContext _dbContext;
 
@@ -20,10 +21,95 @@ namespace YourPlace.Core.Services
             _dbContext = dbContext;
         }
 
-        public async Task<List<Hotel>> GetAllHotels()
+        //public async Task<List<Hotel>> GetAllHotels()
+        //{
+        //    return await _dbContext.Hotels.ToListAsync();
+        //}
+        #region CRUD For Hotels
+        public async Task CreateAsync(Hotel hotel)
         {
-            return await _dbContext.Hotels.ToListAsync();
+            try
+            {
+                _dbContext.Hotels.Add(hotel);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
+
+        public async Task<Hotel> ReadAsync(int key, bool useNavigationalProperties = false, bool isReadOnly = true)
+        {
+            try
+            {
+                IQueryable<Hotel> hotels = _dbContext.Hotels;
+                if (isReadOnly)
+                {
+                    hotels.AsNoTrackingWithIdentityResolution();
+                }
+                return await hotels.SingleOrDefaultAsync(x => x.HotelID == key);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public async Task<IEnumerable<Image>> ShowHotelImages(int hotelID)
+        {
+            var hotelImages = _dbContext.Images.Where(x => x.HotelID == hotelID).ToList();
+            return hotelImages;
+        }
+
+        public async Task<IEnumerable<Hotel>> ReadAllAsync(bool useNavigationalProperties = false, bool isReadOnly = true)
+        {
+            try
+            {
+                IQueryable<Hotel> hotels = _dbContext.Hotels;
+                if (isReadOnly)
+                {
+                    hotels.AsNoTrackingWithIdentityResolution();
+                }
+                return await hotels.ToListAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task UpdateAsync(Hotel item)
+        {
+            try
+            {
+                _dbContext.Hotels.Update(item);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task DeleteAsync(int key)
+        {
+            try
+            {
+                Hotel hotel = await ReadAsync(key, false, false);
+                if (hotel is null)
+                {
+                    throw new ArgumentException(string.Format($"Hotel with id {key} does " +
+                        $"not exist in the database!"));
+                }
+                _dbContext.Hotels.Remove(hotel);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        #endregion
         public async Task<List<Hotel>> SortHotels(string location, string tourism, string atmosphere, string company, decimal pricing)
         {
             var filteredHotels = new List<Hotel>();
@@ -40,22 +126,13 @@ namespace YourPlace.Core.Services
             }
             return filteredHotels.ToList(); //TO BE CHANGED
         }
-        public Hotel ShowHotelInfo(int hotelID)
-        {
-            Hotel hotel = _dbContext.Hotels.Find(hotelID);
-            return hotel;
-        }
-        public List<Image> ShowHotelImages(int hotelID)
-        {
-            var hotelImages = _dbContext.Images.Where(x => x.HotelID ==  hotelID).ToList();
-            return hotelImages;
-        }
 
-        //FILTERS
+
+
+        #region Filters
         public async Task<List<Hotel>> FilterByCountry(string country)
         {
-            var hotelsByCountry = await _dbContext.Hotels.Where(x=>x.Country == country).ToListAsync();
-            return hotelsByCountry;
+            return await _dbContext.Hotels.Where(x=>x.Country == country).ToListAsync();
         }
         public async Task<List<Hotel>> FilterByPeopleCount(int count)
         {
@@ -97,49 +174,7 @@ namespace YourPlace.Core.Services
             }
             return filteredHotels;
         }
+        #endregion
 
-        public async Task CreateAsync(Hotel hotel)
-        {
-            try
-            {
-                _dbContext.Hotels.Add(hotel);
-                await _dbContext.SaveChangesAsync();
-            }
-            catch(Exception)
-            {
-                throw;
-            }
-        }
-
-        public Task<Hotel> ReadAsync(int key, bool useNavigationalProperties = false, bool isReadOnly = true)
-        {
-            try
-            {
-                IQueryable<Hotel> hotels = _dbContext.Hotels;
-                if (isReadOnly)
-                {
-                    hotels.AsNoTrackingWithIdentityResolution();
-                }
-            }
-            catch
-            {
-
-            }
-        }
-
-        public Task<Hotel> ReadAllAsync(Hotel item, bool useNavigationalProperties = false, bool isReadOnly = true)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateAsync(Hotel item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DeleteAsync(Hotel item)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

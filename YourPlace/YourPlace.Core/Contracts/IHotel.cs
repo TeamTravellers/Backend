@@ -9,9 +9,9 @@ namespace YourPlace.Core.Contracts
 {
     public interface IHotel
     {
-        public Task<List<Hotel>> GetAllHotels();
+        //public Task<List<Hotel>> GetAllHotels();
         public Task<List<Hotel>> SortHotels(string location, string tourism, string atmosphere, string company, decimal pricing);
-        public Hotel ShowHotelInfo(int hotelID);
+        //public Hotel ShowHotelInfo(int hotelID);
 
         public Task<List<Hotel>> FilterByCountry(string country);
         public Task<List<Hotel>> FilterByPeopleCount(int count);
