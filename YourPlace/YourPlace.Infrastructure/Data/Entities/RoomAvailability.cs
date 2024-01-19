@@ -14,9 +14,6 @@ namespace YourPlace.Infrastructure.Data.Entities
         [Key]
         public int ID { get; set; }
 
-        [Required] public string Name { get; set; }
-        public int RoomID { get; set; }
-
         [Required]
         public int HotelID { get; set; }
 
@@ -28,5 +25,15 @@ namespace YourPlace.Infrastructure.Data.Entities
         [NotMapped]
         public Room Room { get; set; }
 
+        public RoomAvailability()
+        {
+
+        }
+        public RoomAvailability(int hotelID, RoomTypes type, int availability)
+        {
+            HotelID = hotelID;
+            Type = type;
+            Availability = availability;
+        }
     }
 }
