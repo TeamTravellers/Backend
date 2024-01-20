@@ -34,5 +34,20 @@ namespace YourPlace.Infrastructure.Data.Entities
         [ForeignKey("Room")]
         public int RoomID { get; set; }
 
+        public Reservation()
+        {
+
+        }
+        public Reservation(string firstName, string surname, DateOnly arrivalDate, DateOnly leavingDate, int peopleCount, decimal price, int roomID)
+        {
+            FirstName = firstName;
+            Surname = surname;
+            ArrivalDate = arrivalDate;
+            LeavingDate = leavingDate;
+            PeopleCount = peopleCount;
+            Price = price;
+            RoomID = roomID;
+        }
+
     }
 }
