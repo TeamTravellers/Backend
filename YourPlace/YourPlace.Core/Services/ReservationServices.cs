@@ -17,6 +17,8 @@ namespace YourPlace.Core.Services
     public class ReservationServices : IReservation, IDbCRUD<Reservation, int>
     {
         private readonly YourPlaceDbContext _dbContext;
+        private readonly HotelsServices _hotelsServices;
+        private readonly RoomAvailabiltyServices _roomAvailabiltyServices;
         public ReservationServices(YourPlaceDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -134,100 +136,122 @@ namespace YourPlace.Core.Services
         //    reservationToBeEdited.Price = editedReservation.Price;
         //}
         #endregion
-        public List<Room> FreeRoomCheck(DateOnly arrivalDate, DateOnly leavingDate, Hotel hotel)
-        {
-            //bool response;
-            IQueryable<Room> roomsInHotel = _dbContext.Rooms.Where(x => x.HotelID == hotel.HotelID);
-            List<Reservation> reservations = new List<Reservation>();
-            foreach (Room room in roomsInHotel)
-            {
-                reservations = _dbContext.Reservations.Where(x => x.RoomID == room.RoomID).ToList();
-            }
 
-            //IQueryable<Room> reservedRooms;
-            List<Room> freeRooms = new List<Room>();
-            foreach (var eachReservation in reservations)
-            {
-                if (arrivalDate > eachReservation.LeavingDate || leavingDate < eachReservation.ArrivalDate)
+        #region another old code for checking rooms
+                public List<Room> FreeRoomCheck(DateOnly arrivalDate, DateOnly leavingDate, Hotel hotel)
                 {
-                    //response = true;
-                    Console.WriteLine("The room is free.");
-                    freeRooms.AddRange(roomsInHotel.Where(x => x.RoomID == eachReservation.RoomID));
-                    //CreateReservation(reservation);
-                }
-                else
-                {
-                    //response = false;
-                    Console.WriteLine("There are no free rooms.");
-                    //reservedRooms = rooms.Where(x => x.RoomID == eachReservation.RoomID);
-                }
-            }
-            return freeRooms;
-        }
-        public List<Room> FreeRoomsAccordingToPeopleCount(DateOnly arrivalDate, DateOnly leavingDate, int peopleCount, Hotel hotel)
-        {
-            RoomTypes roomType = RoomTypesHelper.GetRoomTypeForPeopleCount(peopleCount);
-            List<Room> freeRooms = FreeRoomCheck(arrivalDate, leavingDate, hotel).ToList();
-            List<Room> appropriateFreeRooms = new List<Room>();
-            foreach (var room in freeRooms)
-            {
-                if (room.Type.ToString().ToLower() == roomType.ToString().ToLower())
-                {
-                    appropriateFreeRooms.Add(room);
-                }
-            }
-            return appropriateFreeRooms;
-        }
-        public List<RoomTypes> GetRoomTypesForBiggerPeopleCount(DateOnly arrivalDate, DateOnly leavingDate, int peopleCount, int roomID, Hotel hotel)
-        {
-            if (peopleCount > 0 && peopleCount <= 6)
-            {
-                RoomTypesHelper.GetRoomTypeForPeopleCount(peopleCount);
-            }
-            else
-            {
-                //TO BE CONTINUED...
-                //List<RoomTypes> roomTypes = new List<RoomTypes>();
-                //int peopleCount = reservation.PeopleCount;
-                List<Room> freeRoomsInHotel = FreeRoomCheck(arrivalDate, leavingDate, hotel).ToList();
-                List<Room> suggestedRooms = new List<Room>();
-                Dictionary<int, string> availableRooms = new Dictionary<int, string>();
-                Room room = _dbContext.Rooms.Find(roomID);
-                var sameTypeRoomsAvailability = freeRoomsInHotel.Select(x => x.Type == room.Type).Count();
-                availableRooms.Add(sameTypeRoomsAvailability, room.Type.ToString());
-
-                foreach (var availability in availableRooms.Keys)
-                {
-                    if (peopleCount >= availability)
+                    //bool response;
+                    IQueryable<Room> roomsInHotel = _dbContext.Rooms.Where(x => x.HotelID == hotel.HotelID);
+                    List<Reservation> reservations = new List<Reservation>();
+                    foreach (Room room in roomsInHotel)
                     {
+                        reservations = _dbContext.Reservations.Where(x => x.RoomID == room.RoomID).ToList();
+                    }
+
+                    //IQueryable<Room> reservedRooms;
+                    List<Room> freeRooms = new List<Room>();
+                    foreach (var eachReservation in reservations)
+                    {
+                        if (arrivalDate > eachReservation.LeavingDate || leavingDate < eachReservation.ArrivalDate)
+                        {
+                            //response = true;
+                            Console.WriteLine("The room is free.");
+                            freeRooms.AddRange(roomsInHotel.Where(x => x.RoomID == eachReservation.RoomID));
+                            //CreateReservation(reservation);
+                        }
+                        else
+                        {
+                            //response = false;
+                            Console.WriteLine("There are no free rooms.");
+                            //reservedRooms = rooms.Where(x => x.RoomID == eachReservation.RoomID);
+                        }
+                    }
+                    return freeRooms;
+                }
+                public List<Room> FreeRoomsAccordingToPeopleCount(DateOnly arrivalDate, DateOnly leavingDate, int peopleCount, Hotel hotel)
+                {
+                    RoomTypes roomType = RoomTypesHelper.GetRoomTypeForPeopleCount(peopleCount);
+                    List<Room> freeRooms = FreeRoomCheck(arrivalDate, leavingDate, hotel).ToList();
+                    List<Room> appropriateFreeRooms = new List<Room>();
+                    foreach (var room in freeRooms)
+                    {
+                        if (room.Type.ToString().ToLower() == roomType.ToString().ToLower())
+                        {
+                            appropriateFreeRooms.Add(room);
+                        }
+                    }
+                    return appropriateFreeRooms;
+                }
+                public List<RoomTypes> GetRoomTypesForBiggerPeopleCount(DateOnly arrivalDate, DateOnly leavingDate, int peopleCount, int roomID, Hotel hotel)
+                {
+                    if (peopleCount > 0 && peopleCount <= 6)
+                    {
+                        RoomTypesHelper.GetRoomTypeForPeopleCount(peopleCount);
+                    }
+                    else
+                    {
+                        //TO BE CONTINUED...
+                        //List<RoomTypes> roomTypes = new List<RoomTypes>();
+                        //int peopleCount = reservation.PeopleCount;
+                        List<Room> freeRoomsInHotel = FreeRoomCheck(arrivalDate, leavingDate, hotel).ToList();
+                        List<Room> suggestedRooms = new List<Room>();
+                        Dictionary<int, string> availableRooms = new Dictionary<int, string>();
+                        Room room = _dbContext.Rooms.Find(roomID);
+                        var sameTypeRoomsAvailability = freeRoomsInHotel.Select(x => x.Type == room.Type).Count();
+                        availableRooms.Add(sameTypeRoomsAvailability, room.Type.ToString());
+
+                        foreach (var availability in availableRooms.Keys)
+                        {
+                            if (peopleCount >= availability)
+                            {
+
+                            }
+                        }
+
 
                     }
+                    return null;
                 }
+                public async Task<bool> CompleteReservation(string firstName, string surname, DateOnly arrivalDate, DateOnly leavingDate, int peopleCount, decimal price, int roomID, Hotel hotel)
+                {
+                    bool success;
+                    try
+                    {
+                        List<Room> appropriateFreeRooms = FreeRoomsAccordingToPeopleCount(arrivalDate, leavingDate, peopleCount, hotel).ToList();
+                        List<int> roomsIDs = appropriateFreeRooms.Select(x => x.RoomID).ToList();
+                        Random random = new Random();
+                        int randomIndex = random.Next(roomsIDs.Count);
+                        int finalRoomID = roomsIDs[randomIndex];
+                        CreateAsync(new Reservation(firstName, surname, arrivalDate, leavingDate, peopleCount, price, finalRoomID));
+                        //reservation.RoomID = roomIDs;
+                        //await CreateAsync(reservation, roomID);
+                        success = true;
+                    }
+                    catch
+                    {
+                        success = false;
+                    }
+                    return success;
+                }
+                #endregion
 
-
-            }
-            return null;
-        }
-        public async Task<bool> CompleteReservation(string firstName, string surname, DateOnly arrivalDate, DateOnly leavingDate, int peopleCount, decimal price, int roomID, Hotel hotel)
+        public async Task CheckForTotalRoomAvailability(int hotelID, int peopleCount)
         {
-            bool success;
-            try
+            Hotel hotel = await _hotelsServices.ReadAsync(hotelID);
+            int totalRooms = await _roomAvailabiltyServices.GetTotalCountOfRoomsInHotel(hotelID);
+            int maxPeopleInHotel = 0;
+            List<Room> roomsInHotel = await _dbContext.Rooms.Where(x => x.HotelID == hotelID).ToListAsync();
+            foreach(var room in roomsInHotel)
             {
-                List<Room> appropriateFreeRooms = FreeRoomsAccordingToPeopleCount(arrivalDate, leavingDate, peopleCount, hotel).ToList();
-                List<int> roomsIDs = appropriateFreeRooms.Select(x => x.RoomID).ToList();
-                Random random = new Random();
-                int randomIndex = random.Next(roomsIDs.Count);
-                int finalRoomID = roomsIDs[randomIndex];
-                CreateAsync(new Reservation(firstName, surname, arrivalDate, leavingDate, peopleCount, price, finalRoomID));
-                //reservation.RoomID = roomIDs;
-                //await CreateAsync(reservation, roomID);
-                success = true;
+                maxPeopleInHotel += room.MaxPeopleCount;
             }
-            catch
+            
+            if(peopleCount > maxPeopleInHotel)
             {
-                success = false;
+                throw new Exception("Sorry, we do not have enough rooms!");
             }
-            return success;
+
         }
+
     }
 }

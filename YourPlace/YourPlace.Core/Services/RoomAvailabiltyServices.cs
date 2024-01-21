@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using SendGrid.Helpers.Errors.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +14,7 @@ namespace YourPlace.Core.Services
     public class RoomAvailabiltyServices
     {
         private readonly YourPlaceDbContext _dbContext;
+        private readonly HotelsServices _hotelsServices;
         public RoomAvailabiltyServices(YourPlaceDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -31,6 +34,24 @@ namespace YourPlace.Core.Services
                 
                 _dbContext.RoomsAvailability.Add(new RoomAvailability(hotelID, type, count)); 
                 await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public async Task<List<RoomAvailability>> ReadAsync(int key, bool useNavigationalProperties = false, bool isReadOnly = true)
+        {
+            try
+            {
+                Hotel hotel = await _hotelsServices.ReadAsync(key);
+                IQueryable<RoomAvailability> availability = _dbContext.RoomsAvailability;
+                if (isReadOnly)
+                {
+                    availability.AsNoTrackingWithIdentityResolution();
+                }
+                List<RoomAvailability> roomAvailabilitiesInHotel = await availability.Where(x => x.HotelID == key).ToListAsync();
+                return roomAvailabilitiesInHotel;
             }
             catch (Exception)
             {
@@ -63,6 +84,18 @@ namespace YourPlace.Core.Services
             {
                 throw;
             }
+        }
+        public async Task<int> GetTotalCountOfRoomsInHotel(int hotelID)
+        {
+            Hotel hotel = await _hotelsServices.ReadAsync(hotelID);
+            List<RoomAvailability> roomsTypeAndAvailabilityInHotel = await ReadAsync(hotelID);
+            int total = 0;
+            foreach(var item in roomsTypeAndAvailabilityInHotel)
+            {
+                total += item.Availability;
+            }
+            return total;
+
         }
         //public Task CompleteSomething(int hotelID, int peopleCount)
         //{

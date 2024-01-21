@@ -61,7 +61,7 @@ namespace YourPlace.Core.Services
             return hotelImages;
         }
 
-        public async Task<IEnumerable<Hotel>> ReadAllAsync(bool useNavigationalProperties = false, bool isReadOnly = true)
+        public async Task<List<Hotel>> ReadAllAsync(bool useNavigationalProperties = false, bool isReadOnly = true)
         {
             try
             {
