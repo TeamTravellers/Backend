@@ -260,10 +260,15 @@ namespace YourPlace.Core.Services
             Family newFamily = new Family(totalCount, adultsCount, childrenCount);
             return newFamily;
         }
+        public async Task AccomodateFamily(int hotelID, Family family, RoomAvailability availability)
+        {
+            Hotel hotel = await _hotelsServices.ReadAsync(hotelID);
+
+        }
         public async Task ManageRoomsForFamilies(int hotelID, Family family)
         {
             Hotel hotel = await _hotelsServices.ReadAsync(hotelID);
-            var availability = _roomAvailabiltyServices.ReadAsync(hotelID);
+            List<RoomAvailability> availability = await _roomAvailabiltyServices.ReadAsync(hotelID);
             foreach(var item in availability)
             {
 

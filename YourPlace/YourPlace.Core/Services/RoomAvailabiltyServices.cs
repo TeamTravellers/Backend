@@ -51,7 +51,7 @@ namespace YourPlace.Core.Services
                     availability.AsNoTrackingWithIdentityResolution();
                 }
                 List<RoomAvailability> roomAvailabilitiesInHotel = await availability.Where(x => x.HotelID == key).ToListAsync();
-                return roomAvailabilitiesInHotel;
+                return roomAvailabilitiesInHotel.ToList();
             }
             catch (Exception)
             {
