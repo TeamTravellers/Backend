@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace YourPlace.Infrastructure.Data.Enums
 {
-    public enum RoomTypes : byte
+    public enum RoomTypes : int
     {
         none,
         studio = 1,

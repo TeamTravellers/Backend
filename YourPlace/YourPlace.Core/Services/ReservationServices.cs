@@ -250,8 +250,24 @@ namespace YourPlace.Core.Services
             {
                 throw new Exception("Sorry, we do not have enough rooms!");
             }
-
+            else
+            {
+                //CALL SOME METHODS
+            }
         }
+        public async Task<Family> CreateFamily(int totalCount, int adultsCount, int childrenCount, Family family)
+        {
+            Family newFamily = new Family(totalCount, adultsCount, childrenCount);
+            return newFamily;
+        }
+        public async Task ManageRoomsForFamilies(int hotelID, Family family)
+        {
+            Hotel hotel = await _hotelsServices.ReadAsync(hotelID);
+            var availability = _roomAvailabiltyServices.ReadAsync(hotelID);
+            foreach(var item in availability)
+            {
 
+            }
+        }
     }
 }
