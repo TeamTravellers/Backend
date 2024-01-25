@@ -12,11 +12,9 @@ namespace YourPlace.Infrastructure.Data.Entities
         public int AdultsCount { get; set; }
         public int ChildrenCount { get; set; }
 
-        public Family(int totalCount, int adultsCount, int childrenCount)
+        public Family(int totalCount)
         {
             TotalCount = totalCount;
-            AdultsCount = adultsCount;
-            ChildrenCount = childrenCount;
         }
     }
 }
