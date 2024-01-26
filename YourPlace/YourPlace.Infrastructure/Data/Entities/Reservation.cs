@@ -31,14 +31,15 @@ namespace YourPlace.Infrastructure.Data.Entities
         [Required]
         public decimal Price { get; set; }
 
-        [ForeignKey("Room")]
-        public int RoomID { get; set; }
+        [ForeignKey("Hotel")]
+        public int HotelID { get; set; }
 
+        public List<Room> ReservedRooms { get; set; }
         public Reservation()
         {
 
         }
-        public Reservation(string firstName, string surname, DateOnly arrivalDate, DateOnly leavingDate, int peopleCount, decimal price, int roomID)
+        public Reservation(string firstName, string surname, DateOnly arrivalDate, DateOnly leavingDate, int peopleCount, decimal price, int hotelID, List<Room> ReservedRooms)
         {
             FirstName = firstName;
             Surname = surname;
@@ -46,7 +47,8 @@ namespace YourPlace.Infrastructure.Data.Entities
             LeavingDate = leavingDate;
             PeopleCount = peopleCount;
             Price = price;
-            RoomID = roomID;
+            HotelID = hotelID;
+            this.ReservedRooms = ReservedRooms;
         }
 
     }

@@ -12,6 +12,7 @@ using YourPlace.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Entity.Infrastructure;
 using Microsoft.Identity.Client;
+using System.Diagnostics;
 
 namespace YourPlace.Core.Services
 {
@@ -175,7 +176,7 @@ namespace YourPlace.Core.Services
             List<Reservation> reservations = new List<Reservation>();
             foreach (Room room in roomsInHotel)
             {
-                reservations = _dbContext.Reservations.Where(x => x.RoomID == room.RoomID).ToList();
+                reservations = _dbContext.Reservations.Where(x => x.HotelID == hotel.HotelID).ToList();
             }
 
             //IQueryable<Room> reservedRooms;
@@ -186,7 +187,7 @@ namespace YourPlace.Core.Services
                 {
                     //response = true;
                     Console.WriteLine("The room is free.");
-                    freeRooms.AddRange(roomsInHotel.Where(x => x.RoomID == eachReservation.RoomID));
+                    freeRooms.AddRange(roomsInHotel.Where(x => x.HotelID == eachReservation.HotelID));
                     //CreateReservation(reservation);
                 }
                 else
@@ -198,14 +199,15 @@ namespace YourPlace.Core.Services
             }
             return freeRooms;
         }
-        public List<Room> FreeRoomsAccordingToPeopleCount(DateOnly arrivalDate, DateOnly leavingDate, int peopleCount, Hotel hotel)
+        public async Task<List<Room>> FreeRoomsAccordingToPeopleCount(DateOnly arrivalDate, DateOnly leavingDate, int peopleCount, int hotelID)
         {
             try
             {
+                Hotel hotel = await _hotelsServices.ReadAsync(hotelID);
                 RoomTypes roomType = RoomTypesHelper.GetRoomTypeForPeopleCount(peopleCount);
                 List<Room> freeRooms = FreeRoomCheck(arrivalDate, leavingDate, hotel).ToList();
                 List<Room> appropriateFreeRooms = freeRooms.Where(x => x.Type.ToString().ToLower() == roomType.ToString().ToLower()).ToList();
-                return appropriateFreeRooms;
+                return appropriateFreeRooms.ToList();
             }
             catch (Exception)
             {
@@ -213,14 +215,16 @@ namespace YourPlace.Core.Services
             }
             
         }
-        public async Task<int> AccomodateFamily(int hotelID, Family family, DateOnly arrivalDate, DateOnly leavingDate)
+        
+        public async Task<int> CountOfFreeRoomsAccordingToType(int hotelID, Family family, DateOnly arrivalDate, DateOnly leavingDate)
         {
             try
             {
                 Hotel hotel = await _hotelsServices.ReadAsync(hotelID);
-                FreeRoomsAccordingToPeopleCount(arrivalDate, leavingDate, family.TotalCount, hotel);
-                List<Room> roomsInHotel = _dbContext.Rooms.Where(x => x.HotelID == hotelID).ToList();
-                int count = roomsInHotel.Where(x => x.MaxPeopleCount == family.TotalCount).Count();
+                List<Room> freeRooms = await FreeRoomsAccordingToPeopleCount(arrivalDate, leavingDate, family.TotalCount, hotelID);
+                //List<Room> roomsInHotel = freeRooms.Where(x => x.HotelID == hotelID).ToList();
+                int count = freeRooms.Where(x => x.MaxPeopleCount == family.TotalCount).Count();
+                
                 if (count == 0)
                 {
                     throw new Exception($"No free rooms for this number of people!");
@@ -235,28 +239,18 @@ namespace YourPlace.Core.Services
                 throw;
             }
         }    
-        public async Task<bool> CompleteReservation(string firstName, string surname, DateOnly arrivalDate, DateOnly leavingDate, int peopleCount, decimal price, int roomID, Hotel hotel)
+        public async Task<Room> AccomodateFamily(int hotelID, Family family, DateOnly arrivalDate, DateOnly leavingDate)
         {
-            bool success;
-            try
-            {
-                List<Room> appropriateFreeRooms = FreeRoomsAccordingToPeopleCount(arrivalDate, leavingDate, peopleCount, hotel).ToList();
-                List<int> roomsIDs = appropriateFreeRooms.Select(x => x.RoomID).ToList();
-                Random random = new Random();
-                int randomIndex = random.Next(roomsIDs.Count);
-                int finalRoomID = roomsIDs[randomIndex];
-                CreateAsync(new Reservation(firstName, surname, arrivalDate, leavingDate, peopleCount, price, finalRoomID));
-                //reservation.RoomID = roomIDs;
-                //await CreateAsync(reservation, roomID);
-                success = true;
-            }
-            catch
-            {
-                success = false;
-            }
-            return success;
+            CountOfFreeRoomsAccordingToType(hotelID, family, arrivalDate, leavingDate);
+            List<Room> freeRooms = await FreeRoomsAccordingToPeopleCount(arrivalDate, leavingDate, family.TotalCount, hotelID);
+            List<int> roomsIDs = freeRooms.Select(x => x.RoomID).ToList();
+            Random random = new Random();
+            int randomIndex = random.Next(roomsIDs.Count);
+            int finalRoomID = roomsIDs[randomIndex];
+            Room room = await _dbContext.Rooms.FindAsync(finalRoomID);
+            return room;
         }
-        public async Task<bool> CompleteReservation(string firstName, string surname, DateOnly arrivalDate, DateOnly leavingDate, int peopleCount, decimal price, List<Family> families, int roomID, int hotelID)
+        public async Task<bool> CompleteReservation(string firstName, string surname, DateOnly arrivalDate, DateOnly leavingDate, int peopleCount, decimal price, int hotelID, List<Room> reservedRooms, List<Family> families)
         {
             bool success;
             try
@@ -268,12 +262,15 @@ namespace YourPlace.Core.Services
                     CreateFamily(peopleCount, family);
                     AccomodateFamily(hotelID, family, arrivalDate, leavingDate);
                 }
+                CreateAsync(new Reservation(firstName, surname, arrivalDate, leavingDate, peopleCount, price, hotelID, reservedRooms));
                 success = true;
+
             }
             catch
             {
                 success = false;
             }
+            return success;
         }
     }
 }
