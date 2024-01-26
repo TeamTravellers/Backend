@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Data.Entity.Infrastructure;
 using Microsoft.Identity.Client;
 using System.Diagnostics;
+using Microsoft.Identity.Client.Extensibility;
 
 namespace YourPlace.Core.Services
 {
@@ -156,7 +157,7 @@ namespace YourPlace.Core.Services
             }
         }
 
-        public async Task<Family> CreateFamily(int totalCount, Family family)
+        public async Task<Family> CreateFamily(int totalCount)
         {
             try
             {
@@ -250,19 +251,33 @@ namespace YourPlace.Core.Services
             Room room = await _dbContext.Rooms.FindAsync(finalRoomID);
             return room;
         }
-        public async Task<bool> CompleteReservation(string firstName, string surname, DateOnly arrivalDate, DateOnly leavingDate, int peopleCount, decimal price, int hotelID, List<Room> reservedRooms, List<Family> families)
+        public async Task<List<Family>> CreateFamilies(int familyCount, int membersCount)
+        {
+            List<Family> currentlyCreatedFamilies = new List<Family>();
+            for (int i = 0; i < familyCount; i++)
+            {
+                Family family = await CreateFamily(membersCount);
+                currentlyCreatedFamilies.Add(family);
+            }
+            return currentlyCreatedFamilies;
+        }
+        public async Task<bool> CompleteReservation(string firstName, string surname, DateOnly arrivalDate, DateOnly leavingDate, int peopleCount, decimal price, int hotelID, int familyCount)
         {
             bool success;
             try
             {
+                //List<Family> families = CreateFamilies(familyCount);
                 CheckForTotalRoomAvailability(hotelID, peopleCount);
                 CompareTotalCountWithFamilyMembersCount(families, peopleCount); //more like js function
+                List<Room> currentlyReservedRooms = new List<Room>();
+                
                 foreach (Family family in families)
                 {
-                    CreateFamily(peopleCount, family);
-                    AccomodateFamily(hotelID, family, arrivalDate, leavingDate);
+                    //CreateFamily(peopleCount, family);
+                    Room room = await AccomodateFamily(hotelID, family, arrivalDate, leavingDate);
+                    currentlyReservedRooms.Add(room);
                 }
-                CreateAsync(new Reservation(firstName, surname, arrivalDate, leavingDate, peopleCount, price, hotelID, reservedRooms));
+                CreateAsync(new Reservation(firstName, surname, arrivalDate, leavingDate, peopleCount, price, hotelID, currentlyReservedRooms));
                 success = true;
 
             }
