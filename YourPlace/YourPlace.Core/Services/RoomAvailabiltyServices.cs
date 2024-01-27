@@ -97,11 +97,45 @@ namespace YourPlace.Core.Services
             return total;
 
         }
-        //public Task CompleteSomething(int hotelID, int peopleCount)
-        //{
+        public async Task<List<Room>> GetAllRoomsInHotel(int hotelID)
+        {
+            try
+            {
+                Hotel hotel = await _hotelsServices.ReadAsync(hotelID);
+                IQueryable<Room> rooms = _dbContext.Rooms;
+                List<Room> resultList = new List<Room>();
+                foreach (var room in rooms)
+                {
+                    if (room.HotelID == hotelID)
+                    {
+                        resultList.Add(room);
+                    }
+                }
+                return resultList;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
 
-        //}
-
+        }
+        public async Task<int> GetMaxCountOfPeopleInHotel(int hotelID)
+        {
+            try
+            {
+                List<Room> roomsInHotel = await GetAllRoomsInHotel(hotelID);
+                int maxCount = 0;
+                foreach (var room in roomsInHotel)
+                {
+                    maxCount += room.MaxPeopleCount;
+                }
+                return maxCount;
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }
 

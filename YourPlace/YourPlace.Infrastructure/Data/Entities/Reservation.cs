@@ -35,11 +35,12 @@ namespace YourPlace.Infrastructure.Data.Entities
         public int HotelID { get; set; }
 
         public List<Room> ReservedRooms { get; set; }
+        public List<Family> Families { get; set; }
         public Reservation()
         {
 
         }
-        public Reservation(string firstName, string surname, DateOnly arrivalDate, DateOnly leavingDate, int peopleCount, decimal price, int hotelID, List<Room> ReservedRooms)
+        public Reservation(string firstName, string surname, DateOnly arrivalDate, DateOnly leavingDate, int peopleCount, decimal price, int hotelID, List<Room> reservedRooms, List<Family> families)
         {
             FirstName = firstName;
             Surname = surname;
@@ -48,7 +49,8 @@ namespace YourPlace.Infrastructure.Data.Entities
             PeopleCount = peopleCount;
             Price = price;
             HotelID = hotelID;
-            this.ReservedRooms = ReservedRooms;
+            ReservedRooms = reservedRooms;
+            Families = families;
         }
 
     }
