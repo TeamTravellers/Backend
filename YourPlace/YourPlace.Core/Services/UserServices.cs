@@ -24,7 +24,7 @@ namespace YourPlace.Core.Services
         }
 
         #region SIGN UP
-        public async Task CreateAccountAsync(string firstName, string surname, string email, string password, Roles role)
+        public async Task<User> CreateAccountAsync(string firstName, string surname, string email, string password, Roles role)
         {
             try
             {
@@ -42,6 +42,7 @@ namespace YourPlace.Core.Services
                 {
                     await userManager.AddToRoleAsync(user, Roles.Traveller.ToString());
                 }
+                return user;
             }
             catch (Exception ex)
             {
