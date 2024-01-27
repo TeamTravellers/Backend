@@ -30,5 +30,19 @@ namespace YourPlace.Infrastructure.Data.Entities
 
         [ForeignKey("Hotel")]
         public int HotelID { get; set; }
+
+        public Categories()
+        {
+            
+        }
+        public Categories(string location, string tourism, string atmosphere, string company, decimal pricing, int hotelID)
+        {
+            Location = location;
+            Tourism = tourism;
+            Atmosphere = atmosphere;
+            Company = company;
+            Pricing = pricing;
+            HotelID = hotelID;
+        }
     }
 }

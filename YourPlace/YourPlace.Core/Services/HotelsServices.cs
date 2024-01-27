@@ -12,7 +12,7 @@ using System.Collections;
 
 namespace YourPlace.Core.Services
 {
-    public class HotelsServices :IHotel, IDbCRUD<Hotel, int>
+    public class HotelsServices :IDbCRUD<Hotel, int>
     {
         private readonly YourPlaceDbContext _dbContext;
         private readonly RoomAvailabiltyServices _roomAvailabiltyServices;
@@ -22,10 +22,6 @@ namespace YourPlace.Core.Services
             _dbContext = dbContext;
         }
 
-        //public async Task<List<Hotel>> GetAllHotels()
-        //{
-        //    return await _dbContext.Hotels.ToListAsync();
-        //}
         #region CRUD For Hotels
         public async Task CreateAsync(Hotel hotel)
         {

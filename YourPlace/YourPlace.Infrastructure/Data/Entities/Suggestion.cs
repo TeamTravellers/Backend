@@ -28,7 +28,21 @@ namespace YourPlace.Infrastructure.Data.Entities
         [Required]
         public string Pricing { get; set; }
 
-        [ForeignKey("Hotel")]
-        public int HotelID { get; set; }
+        [ForeignKey("User")]
+        public string UserID { get; set; }
+
+        public Suggestion()
+        {
+
+        }
+        public Suggestion( string location, string tourism, string atmosphere, string company, string pricing, string userID)
+        {
+            Location = location;
+            Tourism = tourism;
+            Atmosphere = atmosphere;
+            Company = company;
+            Pricing = pricing;
+            UserID = userID;
+        }
     }
 }

@@ -151,3 +151,6 @@ D:\Aneliya\My Projects\TeamTravellers\Backend\YourPlace\YourPlace\obj\Debug\net8
 D:\Aneliya\My Projects\TeamTravellers\Backend\YourPlace\YourPlace\bin\Debug\net8.0\Microsoft.AspNet.Identity.Core.dll
 D:\Aneliya\My Projects\TeamTravellers\Backend\YourPlace\YourPlace\bin\Debug\net8.0\Microsoft.AspNet.Identity.EntityFramework.dll
 D:\Aneliya\My Projects\TeamTravellers\Backend\YourPlace\YourPlace\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+D:\Aneliya\My Projects\TeamTravellers\Backend\YourPlace\YourPlace\bin\Debug\net8.0\Newtonsoft.Json.dll
+D:\Aneliya\My Projects\TeamTravellers\Backend\YourPlace\YourPlace\bin\Debug\net8.0\SendGrid.dll
+D:\Aneliya\My Projects\TeamTravellers\Backend\YourPlace\YourPlace\bin\Debug\net8.0\StarkbankEcdsa.dll

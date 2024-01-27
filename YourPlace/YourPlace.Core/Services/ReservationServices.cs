@@ -162,26 +162,6 @@ namespace YourPlace.Core.Services
             {
                 throw;
             }
-            
-            //Hotel hotel = await _hotelsServices.ReadAsync(hotelID);
-            ////int totalRooms = await _roomAvailabiltyServices.GetTotalCountOfRoomsInHotel(hotelID);
-            //int maxPeopleInHotel = 0;
-            //List<Room> roomsInHotel = await _dbContext.Rooms.Where(x => x.HotelID == hotelID).ToListAsync();
-            ////int totalRooms = roomsInHotel.Count;
-            //foreach (var room in roomsInHotel)
-            //{
-            //    maxPeopleInHotel += room.MaxPeopleCount;
-            //}
-
-            //if (peopleCount > maxPeopleInHotel)
-            //{
-            //    throw new Exception("Sorry, we do not have enough rooms!");
-            //}
-            //else
-            //{
-            //    //CALL SOME METHODS
-            //}
-
         }
         public async Task<List<Room>> FreeRoomCheck(DateOnly arrivalDate, DateOnly leavingDate, int hotelID) // == filters
         {
@@ -206,33 +186,6 @@ namespace YourPlace.Core.Services
             {
                 throw;
             }
-            //bool response;
-            //IQueryable<Room> roomsInHotel = _dbContext.Rooms.Where(x => x.HotelID == hotel.HotelID);
-            //List<Reservation> reservations = new List<Reservation>();
-            //foreach (Room room in roomsInHotel)
-            //{
-            //    reservations = _dbContext.Reservations.Where(x => x.HotelID == hotel.HotelID).ToList();
-            //}
-
-            ////IQueryable<Room> reservedRooms;
-
-            //foreach (var eachReservation in reservations)
-            //{
-            //    if (arrivalDate > eachReservation.LeavingDate || leavingDate < eachReservation.ArrivalDate)
-            //    {
-            //        //response = true;
-            //        Console.WriteLine("The room is free.");
-            //        freeRooms.AddRange(roomsInHotel.Where(x => x.HotelID == eachReservation.HotelID));
-            //        //CreateReservation(reservation);
-            //    }
-            //    else
-            //    {
-            //        //response = false;
-            //        Console.WriteLine("There are no free rooms.");
-            //        //reservedRooms = rooms.Where(x => x.RoomID == eachReservation.RoomID);
-            //    }
-            //}
-
         }
         public async Task<Family> CreateFamily(int totalCount)
         {
@@ -247,16 +200,6 @@ namespace YourPlace.Core.Services
                 throw;
             }
         }
-        //public async Task<List<Family>> CreateFamilies(int familyCount, int membersCount)
-        //{
-        //    List<Family> currentlyCreatedFamilies = new List<Family>();
-        //    for (int i = 0; i < familyCount; i++)
-        //    {
-        //        Family family = await CreateFamily(membersCount);
-        //        currentlyCreatedFamilies.Add(family);
-        //    }
-        //    return currentlyCreatedFamilies;
-        //}
         public async Task<List<Room>> FreeRoomsAccordingToPeopleCount(DateOnly arrivalDate, DateOnly leavingDate, int peopleCount, int hotelID)
         {
             try
@@ -272,8 +215,7 @@ namespace YourPlace.Core.Services
                 throw;
             }
             
-        }
-        
+        }        
         public async Task<int> CountOfFreeRoomsAccordingToType(int hotelID, Family family, DateOnly arrivalDate, DateOnly leavingDate)
         {
             try
@@ -316,7 +258,35 @@ namespace YourPlace.Core.Services
             }
             return room;
         }
-        
+        /// <summary>
+        /// //DO NOT FORGET TO CREATE FAMILY FIRST EVEN IF THE NUMBER OF PEOPLE IS SMALLER THAN OR EQUALS TO THE MAX CAPACITY OF THE BIGGEST ROOM IN A HOTEL
+        /// </summary>
+        /// <param name="firstName"></param>
+        /// <param name="surname"></param>
+        /// <param name="arrivalDate"></param>
+        /// <param name="leavingDate"></param>
+        /// <param name="peopleCount"></param>
+        /// <param name="price"></param>
+        /// <param name="hotelID"></param>
+        /// <param name="familyCount"></param>
+        /// <returns></returns>
+        public async Task<decimal> CalculatePrices(List<Room> reservedRooms)
+        {
+            try
+            {
+                decimal totalPrice = 0;
+                foreach (Room room in reservedRooms)
+                {
+                    totalPrice += room.Price;
+                }
+                return totalPrice;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+           
+        }
         public async Task<bool> CompleteReservation(string firstName, string surname, DateOnly arrivalDate, DateOnly leavingDate, int peopleCount, decimal price, int hotelID, int familyCount)
         {
             bool success;
@@ -325,14 +295,14 @@ namespace YourPlace.Core.Services
                 CheckForTotalRoomAvailability(hotelID, peopleCount);
                 CompareTotalCountWithFamilyMembersCount(CreatedFamilies, peopleCount); //more like js function
                 List<Room> currentlyReservedRooms = new List<Room>();
-                
                 foreach (Family family in CreatedFamilies)
                 {
                     //CreateFamily(peopleCount, family);
                     Room room = await AccomodateFamily(hotelID, family, arrivalDate, leavingDate);
                     currentlyReservedRooms.Add(room);
                 }
-                CreateAsync(new Reservation(firstName, surname, arrivalDate, leavingDate, peopleCount, price, hotelID, currentlyReservedRooms, CreatedFamilies));
+                decimal totalPrice = await CalculatePrices(currentlyReservedRooms);
+                CreateAsync(new Reservation(firstName, surname, arrivalDate, leavingDate, peopleCount, totalPrice, hotelID, currentlyReservedRooms, CreatedFamilies));
                 success = true;
 
             }

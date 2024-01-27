@@ -19,14 +19,8 @@ namespace YourPlace.Core.Services
         {
             _dbContext = dbContext;
         }
-        #region old code
 
-        //TO DO: see if the hotels has these number of rooms
-
-
-        
-        #endregion
-        
+        #region Some CRUD methods
         public async Task CreateAsync(int hotelID, RoomTypes type, int count)
         {
             try
@@ -58,6 +52,7 @@ namespace YourPlace.Core.Services
                 throw;
             }
         }
+        #endregion
         public async Task FillAvailability(int hotelID)
         {
             try { 
