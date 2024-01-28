@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YourPlace.Infrastructure.Data.Enums;
 
 namespace YourPlace.Infrastructure.Data.Entities
 {
@@ -14,19 +15,19 @@ namespace YourPlace.Infrastructure.Data.Entities
         public int SuggestionID { get; set; }
 
         [Required]
-        public string Location { get; set; }
+        public Location Location { get; set; }
 
         [Required]
-        public string Tourism { get; set; }
+        public Tourism Tourism { get; set; }
 
         [Required]
-        public string Atmosphere { get; set; }
+        public Atmosphere Atmosphere { get; set; }
 
         [Required]
-        public string Company { get; set; }
+        public Company Company { get; set; }
 
         [Required]
-        public string Pricing { get; set; }
+        public Pricing Pricing { get; set; }
 
         [ForeignKey("User")]
         public string UserID { get; set; }
@@ -37,7 +38,7 @@ namespace YourPlace.Infrastructure.Data.Entities
         {
 
         }
-        public Suggestion( string location, string tourism, string atmosphere, string company, string pricing, string userID)
+        public Suggestion(Location location, Tourism tourism, Atmosphere atmosphere, Company company, Pricing pricing, string userID)
         {
             Location = location;
             Tourism = tourism;

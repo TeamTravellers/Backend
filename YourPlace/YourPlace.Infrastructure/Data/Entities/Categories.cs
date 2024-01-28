@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YourPlace.Infrastructure.Data.Enums;
 
 namespace YourPlace.Infrastructure.Data.Entities
 {
@@ -15,19 +16,19 @@ namespace YourPlace.Infrastructure.Data.Entities
         public int CategoryID { get; set; }
 
         [Required]
-        public string Location { get; set; }
+        public Location Location { get; set; }
 
         [Required]
-        public string Tourism { get; set; }
+        public Tourism Tourism { get; set; }
 
         [Required]
-        public string Atmosphere { get; set; }
+        public Atmosphere Atmosphere { get; set; }
 
         [Required]
-        public string Company { get; set; }
+        public Company Company { get; set; }
 
         [Required]
-        public decimal Pricing { get; set; }
+        public Pricing Pricing { get; set; }
 
         [ForeignKey("Hotel")]
         public int HotelID { get; set; }
@@ -38,7 +39,7 @@ namespace YourPlace.Infrastructure.Data.Entities
         {
             
         }
-        public Categories(string location, string tourism, string atmosphere, string company, decimal pricing, int hotelID)
+        public Categories(Location location, Tourism tourism, Atmosphere atmosphere, Company company, Pricing pricing, int hotelID)
         {
             Location = location;
             Tourism = tourism;

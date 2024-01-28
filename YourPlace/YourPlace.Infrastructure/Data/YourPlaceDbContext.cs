@@ -39,6 +39,12 @@ namespace YourPlace.Infrastructure.Data
             modelBuilder.Entity<Categories>().Property(r => r.Company).HasConversion<string>();
             modelBuilder.Entity<Categories>().Property(r => r.Pricing).HasConversion<string>();
 
+            modelBuilder.Entity<Suggestion>().Property(r => r.Location).HasConversion<string>();
+            modelBuilder.Entity<Suggestion>().Property(r => r.Tourism).HasConversion<string>();
+            modelBuilder.Entity<Suggestion>().Property(r => r.Atmosphere).HasConversion<string>();
+            modelBuilder.Entity<Suggestion>().Property(r => r.Company).HasConversion<string>();
+            modelBuilder.Entity<Suggestion>().Property(r => r.Pricing).HasConversion<string>();
+
             modelBuilder.Entity<Image>().HasOne(h => h.Hotel).WithMany().HasForeignKey(h => h.HotelID).IsRequired().OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Suggestion>().HasOne(h => h.User).WithMany().HasForeignKey(h => h.UserID).IsRequired().OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Categories>().HasOne(c => c.Hotel).WithMany().HasForeignKey(c => c.HotelID).IsRequired().OnDelete(DeleteBehavior.Restrict);
