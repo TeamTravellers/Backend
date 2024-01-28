@@ -16,5 +16,6 @@ namespace YourPlace.Infrastructure.Data.Entities
 
         [ForeignKey("Hotel")]
         public int HotelID { get; set; }
+        public Hotel Hotel { get; set; }
     }
 }

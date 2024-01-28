@@ -9,6 +9,7 @@ using YourPlace.Infrastructure.Data.Entities;
 using YourPlace.Core.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System.Collections;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace YourPlace.Core.Services
 {
@@ -41,6 +42,10 @@ namespace YourPlace.Core.Services
             try
             {
                 IQueryable<Hotel> hotels = _dbContext.Hotels;
+                //if(useNavigationalProperties)
+                //{
+                //    hotels = hotels.Include(x => x.Images);
+                //}
                 if (isReadOnly)
                 {
                     hotels.AsNoTrackingWithIdentityResolution();

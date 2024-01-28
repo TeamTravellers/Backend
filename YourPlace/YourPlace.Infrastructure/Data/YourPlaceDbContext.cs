@@ -8,6 +8,7 @@ using YourPlace.Infrastructure.Data.Entities;
 using Microsoft.SqlServer;
 //using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using YourPlace.Infrastructure.Data.Enums;
 
 
 namespace YourPlace.Infrastructure.Data
@@ -32,7 +33,14 @@ namespace YourPlace.Infrastructure.Data
         {
             modelBuilder.Entity<Room>().Property(r => r.Type).HasConversion<string>();
             modelBuilder.Entity<RoomAvailability>().Property(r=>r.Type).HasConversion<string>();
-           
+            modelBuilder.Entity<Categories>().Property(r => r.Location).HasConversion<string>();
+            modelBuilder.Entity<Categories>().Property(r => r.Tourism).HasConversion<string>();
+            modelBuilder.Entity<Categories>().Property(r => r.Atmosphere).HasConversion<string>();
+            modelBuilder.Entity<Categories>().Property(r => r.Company).HasConversion<string>();
+            modelBuilder.Entity<Categories>().Property(r => r.Pricing).HasConversion<string>();
+
+            modelBuilder.Entity<Image>().HasOne(h => h.Hotel).WithMany().HasForeignKey(x => x.HotelID).IsRequired().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Suggestion>().HasOne(h => h.User).WithMany().HasForeignKey(x => x.UserID).IsRequired().OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(modelBuilder);
         }

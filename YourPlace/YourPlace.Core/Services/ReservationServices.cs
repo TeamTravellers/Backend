@@ -14,6 +14,7 @@ using System.Data.Entity.Infrastructure;
 using Microsoft.Identity.Client;
 using System.Diagnostics;
 using Microsoft.Identity.Client.Extensibility;
+using YourPlace.Core.Sorting;
 
 namespace YourPlace.Core.Services
 {

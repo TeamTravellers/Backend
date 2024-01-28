@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YourPlace.Core.Contracts;
+using YourPlace.Core.Services;
 using YourPlace.Infrastructure.Data;
 using YourPlace.Infrastructure.Data.Entities;
 
-namespace YourPlace.Core.Services
+namespace YourPlace.Core.Sorting
 {
     public class Filters : IFilter
     {
@@ -72,6 +73,6 @@ namespace YourPlace.Core.Services
         //{
 
         //}
-        
+
     }
 }

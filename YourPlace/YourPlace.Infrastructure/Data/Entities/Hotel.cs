@@ -32,6 +32,22 @@ namespace YourPlace.Infrastructure.Data.Entities
 
         [Required]
         public string Details { get; set; }
-        
+
+        public List<Image> Images { get; set; }
+        public Hotel()
+        {
+
+        }
+        public Hotel(int hotelID, string mainImageURL, string hotelName, string address, string town, string country, double rating, string details, List<Image> images)
+        {
+            MainImageURL = mainImageURL;
+            HotelName = hotelName;
+            Address = address;
+            Town = town;
+            Country = country;
+            Rating = rating;
+            Details = details;
+            Images = images;
+        }
     }
 }

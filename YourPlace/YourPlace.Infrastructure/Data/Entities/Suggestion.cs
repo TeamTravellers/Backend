@@ -31,6 +31,8 @@ namespace YourPlace.Infrastructure.Data.Entities
         [ForeignKey("User")]
         public string UserID { get; set; }
 
+        [Required]
+        public User User { get; set; }
         public Suggestion()
         {
 

@@ -37,6 +37,11 @@ namespace YourPlace.Core.Services
             try
             {
                 IQueryable<Categories> categories = _dbContext.Categories;
+                IQueryable<Image> images = _dbContext.Images;
+                if (useNavigationalProperties)
+                {
+                    images = images.Include(x => x.Hotel);
+                }
                 if (isReadOnly)
                 {
                     categories.AsNoTrackingWithIdentityResolution();
