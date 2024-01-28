@@ -37,14 +37,14 @@ namespace YourPlace.Core.Services
             try
             {
                 IQueryable<Categories> categories = _dbContext.Categories;
-                IQueryable<Image> images = _dbContext.Images;
+                
                 if (useNavigationalProperties)
                 {
-                    images = images.Include(x => x.Hotel);
+                    categories = categories.Include(x => x.HotelID);
                 }
                 if (isReadOnly)
                 {
-                    categories.AsNoTrackingWithIdentityResolution();
+                    categories = categories.AsNoTrackingWithIdentityResolution();
                 }
                 return await categories.SingleOrDefaultAsync(x => x.HotelID == hotelID);
             }
@@ -60,7 +60,7 @@ namespace YourPlace.Core.Services
                 IQueryable<Categories> categories = _dbContext.Categories;
                 if (isReadOnly)
                 {
-                    categories.AsNoTrackingWithIdentityResolution();
+                    categories = categories.AsNoTrackingWithIdentityResolution();
                 }
                 return await categories.ToListAsync();
             }

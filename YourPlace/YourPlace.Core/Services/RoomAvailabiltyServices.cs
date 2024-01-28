@@ -40,9 +40,13 @@ namespace YourPlace.Core.Services
             {
                 Hotel hotel = await _hotelsServices.ReadAsync(key);
                 IQueryable<RoomAvailability> availability = _dbContext.RoomsAvailability;
+                if (useNavigationalProperties)
+                {
+                    availability = availability.Include(x => x.Room);
+                }
                 if (isReadOnly)
                 {
-                    availability.AsNoTrackingWithIdentityResolution();
+                    availability = availability.AsNoTrackingWithIdentityResolution();
                 }
                 List<RoomAvailability> roomAvailabilitiesInHotel = await availability.Where(x => x.HotelID == key).ToListAsync();
                 return roomAvailabilitiesInHotel.ToList();

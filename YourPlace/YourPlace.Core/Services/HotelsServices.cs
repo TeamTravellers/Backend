@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +9,8 @@ using YourPlace.Core.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System.Collections;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace YourPlace.Core.Services
 {
@@ -42,13 +43,10 @@ namespace YourPlace.Core.Services
             try
             {
                 IQueryable<Hotel> hotels = _dbContext.Hotels;
-                //if(useNavigationalProperties)
-                //{
-                //    hotels = hotels.Include(x => x.Images);
-                //}
+                
                 if (isReadOnly)
                 {
-                    hotels.AsNoTrackingWithIdentityResolution();
+                    hotels = hotels.AsNoTrackingWithIdentityResolution();
                 }
                 return await hotels.SingleOrDefaultAsync(x => x.HotelID == key);
             }
@@ -57,12 +55,7 @@ namespace YourPlace.Core.Services
                 throw;
             }
         }
-        public async Task<IEnumerable<Image>> ShowHotelImages(int hotelID)
-        {
-            var hotelImages = _dbContext.Images.Where(x => x.HotelID == hotelID).ToList();
-            return hotelImages;
-        }
-
+ 
         public async Task<IEnumerable<Hotel>> ReadAllAsync(bool useNavigationalProperties = false, bool isReadOnly = true)
         {
             try
@@ -70,7 +63,7 @@ namespace YourPlace.Core.Services
                 IQueryable<Hotel> hotels = _dbContext.Hotels;
                 if (isReadOnly)
                 {
-                    hotels.AsNoTrackingWithIdentityResolution();
+                    hotels = hotels.AsNoTrackingWithIdentityResolution();
                 }
                 return await hotels.ToListAsync();
             }
@@ -110,6 +103,59 @@ namespace YourPlace.Core.Services
             {
                 throw;
             }
+        }
+        #endregion
+
+        #region CRUD  Images
+        public async Task AddImages(int hotelID, string imagePath)
+        {
+            try
+            {
+                Image image = new Image(imagePath, hotelID);
+                Hotel hotel = await ReadAsync(hotelID);
+                hotel.Images.Add(image);
+                _dbContext.Images.Add(image);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public async Task<IEnumerable<Image>> ShowHotelImages(int hotelID, bool useNavigationalProperties = false, bool isReadOnly = true)
+        {
+            Hotel hotel = await ReadAsync(hotelID);
+            IQueryable<Image> images = _dbContext.Images.Where(x => x.HotelID == hotelID); // may have a problem
+            if (useNavigationalProperties)
+            {
+                images = images.Include(x => x.Hotel);
+            }
+            if (isReadOnly)
+            {
+                images = images.AsNoTrackingWithIdentityResolution();
+            }
+            return await images.ToListAsync();
+        }
+        public async Task DeleteImage(int hotelID, int imageID)
+        {
+            
+            Hotel hotel = await ReadAsync(hotelID, false, false);
+            if (hotel is null)
+            {
+                throw new ArgumentException(string.Format($"Hotel with id {hotelID} does " +
+                    $"not exist in the database!"));
+            }
+            IEnumerable<Image> imagesInHotel = await ShowHotelImages(hotelID);
+            foreach (Image image in imagesInHotel)
+            {
+                if(image.ImageID == imageID)
+                {
+                    _dbContext.Images.Remove(image);
+                    hotel.Images.Remove(image);
+                }
+            }
+            
+            await _dbContext.SaveChangesAsync();
         }
         #endregion
         public async Task<List<Hotel>> SortHotels(string location, string tourism, string atmosphere, string company, decimal pricing)

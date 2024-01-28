@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -31,6 +32,8 @@ namespace YourPlace.Infrastructure.Data.Entities
         [ForeignKey("Hotel")]
         public int HotelID { get; set; }
 
+        [Required]
+        public Hotel Hotel { get; set; }
         public Categories()
         {
             

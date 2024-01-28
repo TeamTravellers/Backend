@@ -34,6 +34,9 @@ namespace YourPlace.Infrastructure.Data.Entities
         [ForeignKey("Hotel")]
         public int HotelID { get; set; }
 
+        [Required]
+        public Hotel Hotel { get; set; }
+
         public List<Room> ReservedRooms { get; set; }
         public List<Family> Families { get; set; }
         public Reservation()

@@ -38,9 +38,13 @@ namespace YourPlace.Core.Services
             try
             {
                 IQueryable<Suggestion> suggestions = _dbContext.Suggestions;
+                if (useNavigationalProperties)
+                {
+                    suggestions = suggestions.Include(x => x.User);
+                }
                 if (isReadOnly)
                 {
-                    suggestions.AsNoTrackingWithIdentityResolution();
+                    suggestions = suggestions.AsNoTrackingWithIdentityResolution();
                 }
                 return await suggestions.SingleOrDefaultAsync(x => x.UserID == userID);
             }
@@ -54,6 +58,10 @@ namespace YourPlace.Core.Services
             try
             {
                 IQueryable<Suggestion> suggestions = _dbContext.Suggestions;
+                if (useNavigationalProperties)
+                {
+                    suggestions = suggestions.Include(x => x.User);
+                }
                 if (isReadOnly)
                 {
                     suggestions.AsNoTrackingWithIdentityResolution();

@@ -7,7 +7,6 @@ using YourPlace.Infrastructure.Data;
 using YourPlace.Infrastructure.Data.Entities;
 using YourPlace.Core.Contracts;
 using System.ComponentModel;
-using System.Data.Entity;
 using YourPlace.Infrastructure.Data.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Entity.Infrastructure;
@@ -49,6 +48,10 @@ namespace YourPlace.Core.Services
             try
             {
                 IQueryable<Reservation> reservations = _dbContext.Reservations;
+                if (useNavigationalProperties)
+                {
+                    reservations = reservations.Include(x => x.Hotel);
+                }
                 if (isReadOnly)
                 {
                     reservations.AsNoTrackingWithIdentityResolution();

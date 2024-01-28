@@ -17,5 +17,15 @@ namespace YourPlace.Infrastructure.Data.Entities
         [ForeignKey("Hotel")]
         public int HotelID { get; set; }
         public Hotel Hotel { get; set; }
+
+        public Image()
+        {
+
+        }
+        public Image(string imageURL, int hotelID)
+        {
+            ImageURL = imageURL;
+            HotelID = hotelID;
+        }
     }
 }
