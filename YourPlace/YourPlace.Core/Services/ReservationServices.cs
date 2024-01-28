@@ -24,7 +24,7 @@ namespace YourPlace.Core.Services
         private readonly RoomAvailabiltyServices _roomAvailabiltyServices;
         private readonly Filters _filters;
 
-        private List<Family> CreatedFamilies = new List<Family>();
+        private readonly List<Family> CreatedFamilies = new List<Family>();
         public ReservationServices(YourPlaceDbContext dbContext)
         {
             _dbContext = dbContext;
