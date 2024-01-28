@@ -40,7 +40,7 @@ namespace YourPlace.Core.Services
                 
                 if (useNavigationalProperties)
                 {
-                    categories = categories.Include(x => x.HotelID);
+                    categories = categories.Include(x => x.Hotel);
                 }
                 if (isReadOnly)
                 {
@@ -58,6 +58,10 @@ namespace YourPlace.Core.Services
             try
             {
                 IQueryable<Categories> categories = _dbContext.Categories;
+                if (useNavigationalProperties)
+                {
+                    categories = categories.Include(x => x.Hotel);
+                }
                 if (isReadOnly)
                 {
                     categories = categories.AsNoTrackingWithIdentityResolution();

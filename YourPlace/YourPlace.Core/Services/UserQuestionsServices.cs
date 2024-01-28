@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNet.Identity;
 namespace YourPlace.Core.Services
 {
-    public class UserQuestionsServices : IDbCRUD<Suggestion, string>
+    public class UserQuestionsServices : IDbCRUD<Preferences, string>
     {
         private readonly YourPlaceDbContext _dbContext;
         //private readonly UserManager<User> _userManager;
@@ -21,11 +21,11 @@ namespace YourPlace.Core.Services
         }
 
         #region CRUD
-        public async Task CreateAsync(Suggestion suggestion)
+        public async Task CreateAsync(Preferences preferences)
         {
             try
             {
-                _dbContext.Suggestions.Add(suggestion);
+                _dbContext.Preferences.Add(preferences);
                 await _dbContext.SaveChangesAsync();
             }
             catch (Exception)
@@ -33,52 +33,52 @@ namespace YourPlace.Core.Services
                 throw;
             }
         }
-        public async Task<Suggestion> ReadAsync(string userID, bool useNavigationalProperties = false, bool isReadOnly = true)
+        public async Task<Preferences> ReadAsync(string userID, bool useNavigationalProperties = false, bool isReadOnly = true)
         {
             try
             {
-                IQueryable<Suggestion> suggestions = _dbContext.Suggestions;
+                IQueryable<Preferences> preferences = _dbContext.Preferences;
                 if (useNavigationalProperties)
                 {
-                    suggestions = suggestions.Include(x => x.User);
+                    preferences = preferences.Include(x => x.User);
                 }
                 if (isReadOnly)
                 {
-                    suggestions = suggestions.AsNoTrackingWithIdentityResolution();
+                    preferences = preferences.AsNoTrackingWithIdentityResolution();
                 }
-                return await suggestions.SingleOrDefaultAsync(x => x.UserID == userID);
+                return await preferences.SingleOrDefaultAsync(x => x.UserID == userID);
             }
             catch (Exception)
             {
                 throw;
             }
         }
-        public async Task<IEnumerable<Suggestion>> ReadAllAsync(bool useNavigationalProperties = false, bool isReadOnly = true)
+        public async Task<IEnumerable<Preferences>> ReadAllAsync(bool useNavigationalProperties = false, bool isReadOnly = true)
         {
             try
             {
-                IQueryable<Suggestion> suggestions = _dbContext.Suggestions;
+                IQueryable<Preferences> preferences = _dbContext.Preferences;
                 if (useNavigationalProperties)
                 {
-                    suggestions = suggestions.Include(x => x.User);
+                    preferences = preferences.Include(x => x.User);
                 }
                 if (isReadOnly)
                 {
-                    suggestions.AsNoTrackingWithIdentityResolution();
+                    preferences.AsNoTrackingWithIdentityResolution();
                 }
-                return await suggestions.ToListAsync();
+                return await preferences.ToListAsync();
             }
             catch (Exception)
             {
                 throw;
             }
         }
-        public async Task UpdateAsync(Suggestion suggestion)
+        public async Task UpdateAsync(Preferences suggestion)
         {
 
             try
             {
-                _dbContext.Suggestions.Update(suggestion);
+                _dbContext.Preferences.Update(suggestion);
                 await _dbContext.SaveChangesAsync();
             }
             catch (Exception)
@@ -91,13 +91,13 @@ namespace YourPlace.Core.Services
         {
             try
             {
-                Suggestion suggestion = await ReadAsync(userID, false, false);
-                if (suggestion is null)
+                Preferences preferences = await ReadAsync(userID, false, false);
+                if (preferences is null)
                 {
                     throw new ArgumentException(string.Format($"Suggestion with userID {userID} does " +
                         $"not exist in the database!"));
                 }
-                _dbContext.Suggestions.Remove(suggestion);
+                _dbContext.Preferences.Remove(preferences);
                 await _dbContext.SaveChangesAsync();
             }
             catch (Exception)

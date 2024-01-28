@@ -26,8 +26,9 @@ namespace YourPlace.Infrastructure.Data.Entities
         
         public Roles Role { get; set; }
 
-        public User() : base()
-        {
+        public Preferences Preferences { get; set; }
+        public User()
+        { 
 
         }
         public User(string firstName, string surname, string email)
@@ -36,6 +37,7 @@ namespace YourPlace.Infrastructure.Data.Entities
             Surname = surname;
             Email = email;
             NormalizedEmail = email.ToUpper();
+            this.Preferences = Preferences;
             //Password = password;
             //Role = role;
         }

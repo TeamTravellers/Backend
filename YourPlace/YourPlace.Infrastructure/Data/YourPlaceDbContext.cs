@@ -22,7 +22,7 @@ namespace YourPlace.Infrastructure.Data
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
 
-        public DbSet<Suggestion> Suggestions { get; set; }
+        public DbSet<Preferences> Preferences { get; set; }
 
         public DbSet<Image> Images { get; set; }
 
@@ -39,14 +39,14 @@ namespace YourPlace.Infrastructure.Data
             modelBuilder.Entity<Categories>().Property(r => r.Company).HasConversion<string>();
             modelBuilder.Entity<Categories>().Property(r => r.Pricing).HasConversion<string>();
 
-            modelBuilder.Entity<Suggestion>().Property(r => r.Location).HasConversion<string>();
-            modelBuilder.Entity<Suggestion>().Property(r => r.Tourism).HasConversion<string>();
-            modelBuilder.Entity<Suggestion>().Property(r => r.Atmosphere).HasConversion<string>();
-            modelBuilder.Entity<Suggestion>().Property(r => r.Company).HasConversion<string>();
-            modelBuilder.Entity<Suggestion>().Property(r => r.Pricing).HasConversion<string>();
+            modelBuilder.Entity<Preferences>().Property(r => r.Location).HasConversion<string>();
+            modelBuilder.Entity<Preferences>().Property(r => r.Tourism).HasConversion<string>();
+            modelBuilder.Entity<Preferences>().Property(r => r.Atmosphere).HasConversion<string>();
+            modelBuilder.Entity<Preferences>().Property(r => r.Company).HasConversion<string>();
+            modelBuilder.Entity<Preferences>().Property(r => r.Pricing).HasConversion<string>();
 
             modelBuilder.Entity<Image>().HasOne(h => h.Hotel).WithMany().HasForeignKey(h => h.HotelID).IsRequired().OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<Suggestion>().HasOne(h => h.User).WithMany().HasForeignKey(h => h.UserID).IsRequired().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Preferences>().HasOne(h => h.User).WithMany().HasForeignKey(h => h.UserID).IsRequired().OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Categories>().HasOne(c => c.Hotel).WithMany().HasForeignKey(c => c.HotelID).IsRequired().OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Reservation>().HasOne(r => r.Hotel).WithMany().HasForeignKey(r => r.HotelID).IsRequired().OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<RoomAvailability>().HasOne(r => r.Room).WithMany().HasForeignKey(r => r.HotelID).IsRequired().OnDelete(DeleteBehavior.Restrict);

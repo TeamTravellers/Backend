@@ -9,7 +9,7 @@ using YourPlace.Infrastructure.Data.Enums;
 
 namespace YourPlace.Infrastructure.Data.Entities
 {
-    public class Suggestion
+    public class Preferences
     {
         [Key]
         public int SuggestionID { get; set; }
@@ -34,11 +34,11 @@ namespace YourPlace.Infrastructure.Data.Entities
 
         [Required]
         public User User { get; set; }
-        public Suggestion()
+        public Preferences()
         {
 
         }
-        public Suggestion(Location location, Tourism tourism, Atmosphere atmosphere, Company company, Pricing pricing, string userID)
+        public Preferences(Location location, Tourism tourism, Atmosphere atmosphere, Company company, Pricing pricing, string userID)
         {
             Location = location;
             Tourism = tourism;

@@ -10,17 +10,16 @@ using YourPlace.Core.Contracts;
 using Microsoft.AspNetCore.Identity;
 using YourPlace.Infrastructure.Data.Enums;
 using System.Data.Entity;
-
 namespace YourPlace.Core.Services
 {
     public class UserServices 
     {
-        private readonly UserManager<User> userManager;
+        private readonly UserManager<User> _userManager;
         private readonly YourPlaceDbContext _dbContext;
         public UserServices(YourPlaceDbContext dbContext, UserManager<User> userManager)
         {
             _dbContext = dbContext;
-            this.userManager = userManager;
+            _userManager = userManager;
         }
 
         #region SIGN UP
@@ -29,18 +28,18 @@ namespace YourPlace.Core.Services
             try
             {
                 User user = new User(firstName, surname, email);
-                IdentityResult result = await userManager.CreateAsync(user);
+                IdentityResult result = await _userManager.CreateAsync(user);
                 if (!result.Succeeded)
                 {
                     throw new ArgumentException(result.Errors.First().Description);
                 }
                 if (role == Roles.HotelManager)
                 {
-                    await userManager.AddToRoleAsync(user, Roles.HotelManager.ToString());
+                    await _userManager.AddToRoleAsync(user, Roles.HotelManager.ToString());
                 }
                 else
                 {
-                    await userManager.AddToRoleAsync(user, Roles.Traveller.ToString());
+                    await _userManager.AddToRoleAsync(user, Roles.Traveller.ToString());
                 }
                 return user;
             }
@@ -56,7 +55,7 @@ namespace YourPlace.Core.Services
         {
             try
             {
-                User user = await userManager.FindByNameAsync(username);
+                User user = await _userManager.FindByNameAsync(username);
 
                 if (user == null)
                 {
@@ -64,7 +63,7 @@ namespace YourPlace.Core.Services
                     CreateAccountAsync(user.FirstName, user.Surname, user.Email, user.Password, user.Role);
                 }
 
-                IdentityResult result = await userManager.PasswordValidators[0].ValidateAsync(userManager, user, password);
+                IdentityResult result = await _userManager.PasswordValidators[0].ValidateAsync(_userManager, user, password);
 
                 if (result.Succeeded)
                 {
@@ -87,7 +86,7 @@ namespace YourPlace.Core.Services
         {
             try
             {
-                return await userManager.FindByIdAsync(key);
+                return await _userManager.FindByIdAsync(key);
             }
             catch (Exception)
             {
@@ -113,11 +112,11 @@ namespace YourPlace.Core.Services
             {
                 if (!string.IsNullOrEmpty(email))
                 {
-                    User userToBeEdited = await userManager.FindByEmailAsync(email);
+                    User userToBeEdited = await _userManager.FindByEmailAsync(email);
                     userToBeEdited.FirstName = firstName;
                     userToBeEdited.Surname = surname;
                     userToBeEdited.Email = email;
-                    await userManager.UpdateAsync(userToBeEdited);
+                    await _userManager.UpdateAsync(userToBeEdited);
                 }
                 
             }
@@ -132,20 +131,20 @@ namespace YourPlace.Core.Services
         }
         public async Task ResetPasswordAsync(string id, string newPassword)
         {
-            User user = await userManager.FindByIdAsync(id);
+            User user = await _userManager.FindByIdAsync(id);
             user.Password = newPassword;
-            await userManager.UpdateAsync(user);
+            await _userManager.UpdateAsync(user);
         }
         public async Task DeleteAccountAsync(string id)
         {
             try
             {
-                User user = await userManager.FindByIdAsync(id);
+                User user = await _userManager.FindByIdAsync(id);
                 if (user != null)
                 {
                     throw new InvalidOperationException("User not found for deletion");
                 }
-                await userManager.DeleteAsync(user);
+                await _userManager.DeleteAsync(user);
             }
             catch(Exception)
             {
