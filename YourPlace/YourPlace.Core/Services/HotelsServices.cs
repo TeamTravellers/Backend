@@ -158,22 +158,22 @@ namespace YourPlace.Core.Services
             await _dbContext.SaveChangesAsync();
         }
         #endregion
-        public async Task<List<Hotel>> SortHotels(string location, string tourism, string atmosphere, string company, decimal pricing)
-        {
-            var filteredHotels = new List<Hotel>();
-            var filters = await _dbContext.Categories.Where(x => 
-                x.Location == location ||
-                x.Tourism == tourism ||
-                x.Atmosphere == atmosphere ||
-                x.Company == company ||
-                x.Pricing == pricing)
-                .ToListAsync();
-            foreach(var filter in filters)
-            {
-                filteredHotels = await _dbContext.Hotels.Where(x => x.HotelID == filter.HotelID).ToListAsync();
-            }
-            return filteredHotels.ToList(); //TO BE CHANGED
-        }
+        //public async Task<List<Hotel>> SortHotels(string location, string tourism, string atmosphere, string company, decimal pricing)
+        //{
+        //    var filteredHotels = new List<Hotel>();
+        //    var filters = await _dbContext.Categories.Where(x => 
+        //        x.Location == location ||
+        //        x.Tourism == tourism ||
+        //        x.Atmosphere == atmosphere ||
+        //        x.Company == company ||
+        //        x.Pricing == pricing)
+        //        .ToListAsync();
+        //    foreach(var filter in filters)
+        //    {
+        //        filteredHotels = await _dbContext.Hotels.Where(x => x.HotelID == filter.HotelID).ToListAsync();
+        //    }
+        //    return filteredHotels.ToList(); //TO BE CHANGED
+        //}
 
         
 
