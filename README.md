@@ -2,7 +2,8 @@
 C#/Entity Framework
 
 DATABASE EER DIAGRAM
-![Database Diagram](https://github.com/TeamTravellers/Backend/assets/89069514/ba9ce5ba-8747-423c-8c08-d8a989b0f440)
+![Database Diagram](https://github.com/TeamTravellers/Backend/assets/89069514/e56ba890-10cf-4d3c-8d78-be510adc140e)
+
 
 
 
